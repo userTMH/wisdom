@@ -53,3 +53,38 @@ export function areasApi(data) {
   });
 }
 //#endregion
+
+//#region 停车缴费管理
+//查看停车缴费列表
+export function paymentlistApi(params) {
+  return request({
+    url: "/parking/payment/list",
+    method: "GET",
+    params,
+  });
+}
+
+//#endregion
+
+//#region 计费规则管理
+//计费规则列表
+export function rulelistApi(params) {
+  return request({
+    url: "/parking/rule/list",
+    method: "GET",
+    params,
+  });
+}
+//添加计费规则
+export function ruleListApi(data) {
+  return request({
+    url: "/parking/rule",
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    data,
+  });
+}
+
+//#endregion
