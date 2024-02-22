@@ -86,5 +86,32 @@ export function ruleListApi(data) {
     data,
   });
 }
-
+//编辑回显
+export function ruleeApi(id) {
+  return request({
+    url: `/parking/rule/${id}`,
+    method: "GET",
+  });
+}
+//编辑
+export function parkingListApi(data) {
+  return request({
+    url: "/parking/rule",
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    data,
+  });
+}
+//删除
+export function editApi(id) {
+  return request({
+    url: `/parking/rule/${id}`,
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+    },
+  });
+}
 //#endregion

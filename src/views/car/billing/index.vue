@@ -30,7 +30,7 @@
         <el-table-column fixed="right" label="操作" width="100">
           <template v-slot="{ row }">
             <el-button type="text" size="small" @click="add(row)">编辑</el-button>
-            <el-button type="text" size="small">删除</el-button>
+            <el-button type="text" size="small" @click="edit(row)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -44,7 +44,7 @@
       </div>
     </div>
     <!-- 弹窗 -->
-    <el-dialog title="添加计费规则" :visible.sync="dialogVisible" width="50%" :before-close="handleClose">
+    <el-dialog :title="title" :visible.sync="dialogVisible" width="50%" :before-close="handleClose">
       <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm"
         label-position="top" style="width: 75%;margin: auto;">
         <!-- 计费规则编号 -->
@@ -67,22 +67,24 @@
         </el-form-item>
 
         <!-- 免费时长、收费上限 -->
-        <el-form-item label="" prop="freeDuration">
-          <template v-slot="{ row }">
-            <div style="display: flex;justify-content: space-between;align-items: center;">
-              <span style="width: 55%;">免费时长</span>
-              <span style="width: 45%;">收费上限</span>
-            </div>
-            <div style="display: flex;justify-content: space-between;align-self: start;">
-              <el-input-number v-model="ruleForm.freeDuration" controls-position="right" :min="1" :max="10"
-                style="width: 40%;"></el-input-number>分钟
-              <el-input v-model="ruleForm.chargeCeiling" placeholder="请输入收费上限" style="width: 40%;"></el-input>元
-            </div>
-          </template>
+        <el-form-item label="">
+          <div style="display: flex;justify-content: space-between;align-items: center;">
+            <span style="width: 55%;">免费时长</span>
+            <span style="width: 45%;">收费上限</span>
+          </div>
+          <div style="display: flex;justify-content: space-between;align-self: start;">
+            <el-form-item prop="freeDuration">
+              <el-input-number v-model="ruleForm.freeDuration" controls-position="right" :min="1"
+                :max="10"></el-input-number>
+            </el-form-item>分钟
+            <el-form-item prop="chargeCeiling">
+              <el-input v-model="ruleForm.chargeCeiling" placeholder="请输入收费上限"></el-input>
+            </el-form-item>元
+          </div>
         </el-form-item>
 
         <!-- 计费规则 -->
-        <el-form-item label="计费规则">
+        <el-form-item label=" 计费规则">
           <!-- 时长收费 -->
           <div style="display: flex;justify-content: space-between;align-self: start;"
             v-if="ruleForm.chargeType == 'duration'">
@@ -156,7 +158,7 @@
 </template>
 
 <script>
-import { rulelistApi, ruleListApi } from '@/api/car'
+import { rulelistApi, ruleListApi, ruleeApi, parkingListApi, editApi } from '@/api/car'
 export default {
   name: 'VueWisdomIndex',
 
@@ -174,6 +176,8 @@ export default {
       loading: false,
       //弹窗状态
       dialogVisible: false,
+      //弹窗标题
+      title: '',
       ruleForm: {
         ruleNumber: '',//计费规则编号
         ruleName: '',//计费规则名称
@@ -256,37 +260,84 @@ export default {
       this.$confirm('确认关闭？')
         .then(_ => {
           done();
+          this.$refs.ruleForm.resetFields();
         })
         .catch(_ => { });
     },
     //打开弹窗
-    add(e) {
+    async add(e) {
       this.dialogVisible = true
+      if (e.id) {
+        this.title = '编辑计费规则'
+        const res = await ruleeApi(e.id)
+        this.ruleForm = JSON.parse(JSON.stringify(res.data))
+        // console.log(this.ruleForm);
+      } else {
+        this.title = '添加计费规则'
+      }
     },
     //确定按钮
     submitForm() {
       this.$refs.ruleForm.validate(async (valid) => {
         if (valid) {
-          const res = await ruleListApi(this.ruleForm)
-          // console.log(res);
-          if (res.code == 10000) {
-            this.$message.success('添加成功')
-            this.getList()
-            this.$refs.ruleForm.resetFields();
-            this.dialogVisible = false
+          if (this.title == "添加计费规则") {
+            const res = await ruleListApi(this.ruleForm)
+            // console.log(res);
+            if (res.code == 10000) {
+              this.$message.success('添加成功')
+              this.getList()
+              this.$refs.ruleForm.resetFields();
+              this.dialogVisible = false
+            } else {
+              this.$message.success('添加失败')
+              this.getList()
+              this.$refs.ruleForm.resetFields();
+              this.dialogVisible = false
+            }
           } else {
-            this.$message.success('添加失败')
-            this.getList()
-            this.$refs.ruleForm.resetFields();
-            this.dialogVisible = false
+            const res = await parkingListApi(this.ruleForm)
+            console.log(res);
+            if (res.code == 10000) {
+              this.$message.success('编辑成功')
+              this.getList()
+              this.$refs.ruleForm.resetFields();
+              this.dialogVisible = false
+            } else {
+              this.$message.success('编辑失败')
+              this.getList()
+              this.$refs.ruleForm.resetFields();
+              this.dialogVisible = false
+            }
           }
-
         } else {
           console.log('error submit!!');
           return false;
         }
       });
     },
+    //删除
+    edit(row) {
+      this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(async () => {
+        const res = await editApi(row.id)
+        // console.log(res);
+        if (res.code == 10000) {
+          this.$message({
+            type: 'success',
+            message: '删除成功!'
+          });
+          this.getList()
+        }
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        });
+      });
+    }
   },
 };
 </script>
