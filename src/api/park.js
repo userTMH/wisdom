@@ -66,4 +66,26 @@ export function enterpribuildingApi(params) {
     method: "GET",
   });
 }
+//园区管理-增加企业
+export function enterpriseApi(data) {
+  return request({
+    url: "/park/enterprise",
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    data,
+  });
+}
+//园区管理-添加/续租企业的租赁合同
+export function enterpriseaddApi(data) {
+  return request({
+    url: "/park/enterprise/rent",
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    data,
+  });
+}
 //#endregion

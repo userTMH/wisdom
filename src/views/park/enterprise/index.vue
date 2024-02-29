@@ -55,7 +55,7 @@
       <!-- 分页 -->
       <div style="display: flex;justify-content: space-between;">
         <p></p>
-        <el-pagination @size-change="handleSizeChange" @current-change="handleSizeChange" :current-page="pages.page"
+        <el-pagination @size-change="handleSizeChange" @current-change="handleSizeChanges" :current-page="pages.page"
           :page-sizes="[10, 20, 30, 40]" :page-size="pages.pageSize" layout="total, prev, sizes, pager, next, jumper"
           :total="total">
         </el-pagination>
@@ -138,19 +138,24 @@ export default {
     async getList() {
       const res = await enterpriselistApi(this.pages)
       // console.log(res);
-      this.tableData = res.data.rows
+      this.tableData = res.data.rows.map((item) => {
+        return { ...item, list: [] }
+      })
       this.total = res.data.total
     },
     //分页事件
-    handleSizeChange(e) {
+    handleSizeChanges(e) {
       // console.log(e);
       this.pages.page = e
       this.getList()
     },
+    handleSizeChange(e) {
+      // console.log(e);
+      this.pages.pageSize = e
+      this.getList()
+    },
     //展开合同
     async tab(e, a) {
-      // console.log(e);
-      // console.log(a);
       const isExpend = a.find(item => item.id === e.id)
       if (isExpend) {
         const res = await enterpriserentApi(e.id)
@@ -158,7 +163,7 @@ export default {
         const add = this.tableData.find((item) => {
           return item.id == e.id
         })
-        add.list = res.data.data
+        add.list = res.data
       }
     },
     //对话框事件
@@ -191,6 +196,7 @@ export default {
       // 单独校验表单
       this.$refs.addForm.validate('contractId')
     },
+    //确认事件
     submitForm() {
       this.$refs.ruleForm.validate((valid) => {
         if (valid) {
