@@ -20,7 +20,10 @@
           </el-dropdown-menu>
         </el-dropdown>
       </div>
-      <el-button style="width: 95%;margin: auto;" size="small" @click="add">添加角色</el-button>
+      <div>
+        <el-button style="width: 95%;margin: auto;" size="small" v-auth-btn="'sys:role:add_edit'"
+          @click="add">添加角色</el-button>
+      </div>
     </div>
 
 

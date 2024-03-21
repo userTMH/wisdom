@@ -38,7 +38,7 @@ router.beforeEach(async (to, from, next) => {
   };
   //筛选所拥有的数据
   const gitList = (newAdd, newAdds, asyncRouter) => {
-    console.log(newAdds);
+    // console.log(newAdds);
     if (newAdd == "*") {
       return asyncRouter;
     }
@@ -63,7 +63,7 @@ router.beforeEach(async (to, from, next) => {
       next({ path: "/" });
       NProgress.done();
     } else {
-      const hasGetUserInfo = store.getters.id;
+      const hasGetUserInfo = store.getters.name;
       if (hasGetUserInfo) {
         next();
       } else {
@@ -88,11 +88,12 @@ router.beforeEach(async (to, from, next) => {
 
           store.commit("menu/setMenus", asyncList);
 
-          next();
+          next(to.fullPath);
         } catch (error) {
           console.log("error=>", error);
           // 失败, 清空token 以及 用户信息
           await store.dispatch("user/logout");
+          await store.commit("menu/resetMenu");
           // 进行错误信息提示
           Message.error(error || "Has Error");
           // 跳转到登录页

@@ -16,6 +16,7 @@ const mutations = {
   },
   removeToken(state) {
     state.token = null;
+    state.userinfo = {};
     removeToken();
   },
   userInfo(state, data) {
@@ -34,7 +35,7 @@ const actions = {
   //退出登录
   removeToken(context, data) {
     context.commit("removeToken");
-    this.$router.push("/login");
+    // this.$router.push("/login");
   },
   //获取用户信息
   async getInfo(context, data) {

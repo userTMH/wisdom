@@ -16,7 +16,7 @@
           <el-dropdown-item>
             修改密码
           </el-dropdown-item>
-          <el-dropdown-item divided @click.native="logout">
+          <el-dropdown-item divided>
             <span style="display:block;" @click="edit">退出登录</span>
           </el-dropdown-item>
         </el-dropdown-menu>
@@ -47,12 +47,14 @@ export default {
     toggleSideBar() {
       this.$store.dispatch('app/toggleSideBar')
     },
-    async logout() {
-      await this.$store.dispatch('user/logout')
-      this.$router.push(`/login?redirect=${this.$route.fullPath}`)
-    },
+    // async logout() {
+    //   await this.$store.dispatch('user/logout')
+    //   this.$router.push(`/login?redirect=${this.$route.fullPath}`)
+    // },
     edit() {
       this.$store.dispatch('user/removeToken', '')
+      this.$store.commit('menu/resetMenu', '')
+      this.$router.push(`/login?redirect=${this.$route.fullPath}`)
     }
   }
 }

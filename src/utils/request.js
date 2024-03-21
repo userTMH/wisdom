@@ -43,6 +43,8 @@ service.interceptors.response.use(
     // token失效处理
     if (error.response.status === 401 && error.response.data.code === 40001) {
       await store.dispatch("user/logout");
+      await store.commit("menu/resetMenu");
+
       router.push("/login");
       Message({
         message: "登录已过期，请重新登录",
