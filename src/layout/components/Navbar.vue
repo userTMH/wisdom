@@ -5,19 +5,19 @@
     <breadcrumb class="breadcrumb-container" /> -->
 
     <div class="right-menu">
-      <button class="wrapper-button">可视化大屏</button>
+      <button class="wrapper-button" @click="$router.push('/big-screen')">
+        可视化大屏
+      </button>
       <el-dropdown class="avatar-container" trigger="click">
         <div class="avatar-wrapper">
-          <span style="color: #000;font-weight: 700;">{{ name }}</span>
+          <span style="color: #000; font-weight: 700">{{ name }}</span>
           <!-- <img :src="avatar + '?imageView2/1/w/80/h/80'" class="user-avatar"> -->
           <!-- <i class="el-icon-caret-bottom" /> -->
         </div>
         <el-dropdown-menu slot="dropdown" class="user-dropdown">
-          <el-dropdown-item>
-            修改密码
-          </el-dropdown-item>
+          <el-dropdown-item> 修改密码 </el-dropdown-item>
           <el-dropdown-item divided>
-            <span style="display:block;" @click="edit">退出登录</span>
+            <span style="display: block" @click="edit">退出登录</span>
           </el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
@@ -26,38 +26,34 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
-import Breadcrumb from '@/components/Breadcrumb'
-import Hamburger from '@/components/Hamburger'
+import { mapGetters } from "vuex";
+import Breadcrumb from "@/components/Breadcrumb";
+import Hamburger from "@/components/Hamburger";
 import store from "@/store";
 
 export default {
   components: {
     Breadcrumb,
-    Hamburger
+    Hamburger,
   },
   computed: {
-    ...mapGetters([
-      'sidebar',
-      'avatar',
-      'name'
-    ])
+    ...mapGetters(["sidebar", "avatar", "name"]),
   },
   methods: {
     toggleSideBar() {
-      this.$store.dispatch('app/toggleSideBar')
+      this.$store.dispatch("app/toggleSideBar");
     },
     // async logout() {
     //   await this.$store.dispatch('user/logout')
     //   this.$router.push(`/login?redirect=${this.$route.fullPath}`)
     // },
     edit() {
-      this.$store.dispatch('user/removeToken', '')
-      this.$store.commit('menu/resetMenu', '')
-      this.$router.push(`/login?redirect=${this.$route.fullPath}`)
-    }
-  }
-}
+      this.$store.dispatch("user/removeToken", "");
+      this.$store.commit("menu/resetMenu", "");
+      this.$router.push(`/login?redirect=${this.$route.fullPath}`);
+    },
+  },
+};
 </script>
 
 <style lang="scss" scoped>
@@ -73,11 +69,11 @@ export default {
     height: 100%;
     float: left;
     cursor: pointer;
-    transition: background .3s;
+    transition: background 0.3s;
     -webkit-tap-highlight-color: transparent;
 
     &:hover {
-      background: rgba(0, 0, 0, .025)
+      background: rgba(0, 0, 0, 0.025);
     }
   }
 
@@ -116,10 +112,10 @@ export default {
 
       &.hover-effect {
         cursor: pointer;
-        transition: background .3s;
+        transition: background 0.3s;
 
         &:hover {
-          background: rgba(0, 0, 0, .025)
+          background: rgba(0, 0, 0, 0.025);
         }
       }
     }
