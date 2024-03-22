@@ -23,10 +23,22 @@ module.exports = {
       warnings: false,
       errors: true,
     },
+    // proxy: {
+    //   [process.env.VUE_APP_BASE_API]: {
+    //     target: process.env.VUE_APP_BASE_URL,
+    //     changeOrigin: true,
+    //     pathRewite: {
+    //       "^/api": "",
+    //     },
+    //   },
+    // },
     proxy: {
       [process.env.VUE_APP_BASE_API]: {
-        target: [process.env.VUE_APP_BASE_URL],
+        target: "https://api-hmzs.itheima.net/api",
         changeOrigin: true,
+        pathRewrite: {
+          ["^" + process.env.VUE_APP_BASE_API]: "",
+        },
       },
     },
   },
